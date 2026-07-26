@@ -117,9 +117,12 @@ def relay_game_request(
         }), response.status_code
 
     except requests.RequestException as error:
+
+        print(f"[API ERROR] {error}")
+
         return jsonify({
             "success": False,
-            "error": f"Game server request failed: {error}"
+            "error": "Unable to communicate with the game server."
         }), 502
 
 
