@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Palworld Base Tracker</title>
+ 
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+ 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="statistics">
+        <div class="stat">
+            <span class="stat-label">Total Base Pals</span>
+            <span class="stat-value" id="total-base-pals">Loading...</span>
+        </div>
+ 
+        <div class="stat">
+            <span class="stat-label">Total Players</span>
+            <span
+                class="stat-value"
+                id="total-players"
+                role="button"
+                tabindex="0"
+                title="Click to view online players"
+            >Loading...</span>
+        </div>
+ 
+        <div class="stat">
+            <span class="stat-label">Total Wild NPCs</span>
+            <span class="stat-value" id="total-wild-npcs">Loading...</span>
+        </div>
+ 
+        <div class="stat">
+            <span class="stat-label">Total Bases</span>
+            <span class="stat-value" id="total-bases">Loading...</span>
+        </div>
+ 
+        <div class="stat">
+            <span class="stat-label">Total Guilds</span>
+            <span class="stat-value" id="total-guilds">Loading...</span>
+        </div>
+ 
+        <div class="stat">
+            <span class="stat-label">Last Updated</span>
+            <span class="stat-value" id="last-updated">Loading...</span>
+        </div>
+ 
+        <div id="server-menu-container">
+            <button
+                id="server-menu-button"
+                type="button"
+                aria-label="Server menu"
+                aria-expanded="false"
+                title="Server menu"
+            >⋮</button>
+ 
+            <div id="server-menu">
+                <div class="menu-server-section">
+                    <label class="menu-server-label" for="server-selector">
+                        Active Server
+                    </label>
+                    <select id="server-selector"></select>
+                </div>
+ 
+                <button class="menu-item" id="announce-menu-button" type="button">
+                    Make Announcement
+                </button>
+ 
+                <button class="menu-item" id="save-world-menu-button" type="button">
+                    Save World
+                </button>
+ 
+                <button class="menu-item" id="shutdown-menu-button" type="button">
+                    Shutdown Server
+                </button>
+ 
+                <button class="menu-item danger" id="emergency-stop-menu-button" type="button">
+                    Emergency Stop
+                </button>
+ 
+                <button class="menu-item" id="server-configuration-menu-button" type="button">
+                    Configure Servers
+                </button>
+ 
+                <div class="menu-divider"></div>
+ 
+                <button class="menu-item" id="kicked-log-menu-button" type="button">
+                    Kicked Log (0)
+                </button>
+ 
+                <button class="menu-item" id="banned-log-menu-button" type="button">
+                    Banned Log (0)
+                </button>
+            </div>
+        </div>
+    </div>
+ 
+    <div id="players-modal" class="modal" aria-hidden="true">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h2>Online Players</h2>
+                <button id="close-players" class="close-button" type="button">×</button>
+            </div>
+            <ul id="players-list" class="list"></ul>
+        </div>
+    </div>
+ 
+    <div id="kicked-modal" class="modal" aria-hidden="true">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h2>Kicked Players</h2>
+                <button id="close-kicked" class="close-button" type="button">×</button>
+            </div>
+            <ul id="kicked-list" class="list"></ul>
+        </div>
+    </div>
+ 
+    <div id="banned-modal" class="modal" aria-hidden="true">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h2>Banned Players</h2>
+                <button id="close-banned" class="close-button" type="button">×</button>
+            </div>
+            <ul id="banned-list" class="list"></ul>
+        </div>
+    </div>
+ 
+    <div id="announcement-modal" class="modal" aria-hidden="true">
+        <div class="dialog small-dialog">
+            <div class="dialog-header">
+                <h2>Make Announcement</h2>
+                <button id="close-announcement" class="close-button" type="button">×</button>
+            </div>
+ 
+            <form id="announcement-form" class="dialog-form">
+                <label for="announcement-message">Message</label>
+                <textarea id="announcement-message" maxlength="1000" required></textarea>
+ 
+                <div class="form-actions">
+                    <button class="form-button cancel-button" id="cancel-announcement" type="button">
+                        Cancel
+                    </button>
+                    <button class="form-button primary-button" type="submit">
+                        Send Announcement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+    <div id="shutdown-modal" class="modal" aria-hidden="true">
+        <div class="dialog small-dialog">
+            <div class="dialog-header">
+                <h2>Shutdown Server</h2>
+                <button id="close-shutdown" class="close-button" type="button">×</button>
+            </div>
+ 
+            <form id="shutdown-form" class="dialog-form">
+                <label for="shutdown-waittime">Wait Time in Seconds</label>
+                <input id="shutdown-waittime" type="number" min="0" step="1" value="30" required>
+ 
+                <label for="shutdown-message">Message</label>
+                <textarea id="shutdown-message" maxlength="1000" required>Server will shutdown soon.</textarea>
+ 
+                <div class="form-actions">
+                    <button class="form-button cancel-button" id="cancel-shutdown" type="button">
+                        Cancel
+                    </button>
+                    <button class="form-button danger-button" type="submit">
+                        Shutdown Server
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+    <div id="player-action-modal" class="modal" aria-hidden="true">
+        <div class="dialog small-dialog">
+            <div class="dialog-header">
+                <h2>Player Action</h2>
+                <button id="close-player-action" class="close-button" type="button">×</button>
+            </div>
+ 
+            <form id="player-action-form" class="dialog-form">
+                <p id="player-action-description"></p>
+ 
+                <label for="player-action-message">Custom Message</label>
+                <textarea id="player-action-message" maxlength="1000"></textarea>
+ 
+                <div class="form-actions">
+                    <button class="form-button cancel-button" id="cancel-player-action" type="button">
+                        Cancel
+                    </button>
+                    <button class="form-button primary-button" id="confirm-player-action" type="submit">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+    <div id="unban-confirm-modal" class="modal" aria-hidden="true">
+        <div class="dialog small-dialog">
+            <div class="dialog-header">
+                <h2>Unban Player</h2>
+                <button id="close-unban" class="close-button" type="button">×</button>
+            </div>
+ 
+            <form id="unban-form" class="dialog-form">
+                <p id="unban-description"></p>
+ 
+                <label for="unban-message">Custom Message</label>
+                <textarea id="unban-message" maxlength="1000"></textarea>
+
+                <div class="form-actions">
+                    <button class="form-button cancel-button" id="cancel-unban" type="button">
+                        Cancel
+                    </button>
+                    <button class="form-button success-button" type="submit">
+                        Unban
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+    <div id="configuration-modal" class="modal" aria-hidden="false">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h2>Server Configuration</h2>
+                <button id="close-configuration" class="close-button" type="button">×</button>
+            </div>
+ 
+            <div id="configuration-status" class="configuration-status">
+                Configuration is stored by the server.
+            </div>
+ 
+            <form id="configuration-form" class="dialog-form">
+				<label for="config-server-name">Server Name</label>
+				<input id="config-server-name" type="text" maxlength="100" required>
+
+				<hr>
+				<h3>Game Server API</h3>
+
+				<label for="config-server-address">API Address</label>
+				<input id="config-server-address" type="text" placeholder="127.0.0.1" required>
+
+				<label for="config-server-port">API Port</label>
+				<input id="config-server-port" type="number" min="1" max="65535" placeholder="8212" required>
+
+				<label for="config-server-password">Base64 API Password</label>
+				<input id="config-server-password" type="text" autocomplete="off" required>
+
+				<div class="help-text">
+					Leave blank when editing to keep the existing password.
+				</div>
+
+				<hr>
+				<h3>Polling</h3>
+
+				<label for="config-poll-interval">Poll Interval (seconds)</label>
+				<input id="config-poll-interval" type="number" min="5" value="30">
+
+				<label for="config-refresh-interval">Data Refresh Interval (seconds)</label>
+				<input id="config-refresh-interval" type="number" min="10" value="60">
+
+				<label for="config-max-distance">Maximum Pal/Base Distance</label>
+				<input id="config-max-distance" type="number" min="0" placeholder="10000" required>
+
+				<hr>
+				<h3>SSH Tunnel</h3>
+
+				<label class="checkbox-label">
+					<input id="config-use-ssh" type="checkbox">
+					Use SSH Tunnel
+				</label>
+
+				<div id="ssh-options">
+
+					<label for="config-ssh-host">SSH Host</label>
+					<input id="config-ssh-host" type="text" placeholder="example.com" required>
+
+					<label for="config-ssh-port">SSH Port</label>
+					<input id="config-ssh-port" type="number" min="1" max="65535" value="22">
+
+					<label for="config-ssh-user">SSH Username</label>
+					<input id="config-ssh-user" type="text" placeholder="root" required>
+
+					<label for="config-ssh-key">Private Key Path</label>
+					<input id="config-ssh-key" type="text" placeholder="C:\Users\YourName\.ssh\id_ed25519" required>
+
+					<label for="config-remote-host">Remote API Host</label>
+					<input id="config-remote-host" type="text" value="127.0.0.1">
+
+					<label for="config-remote-port">Remote API Port</label>
+					<input id="config-remote-port" type="number" min="1" max="65535" value="8212">
+
+				</div>
+
+				<div class="form-actions">
+					<button class="form-button cancel-button" id="cancel-configuration" type="button">
+						Cancel
+					</button>
+					<button class="form-button primary-button" type="submit">
+						Save Server
+					</button>
+				</div>
+			</form>
+ 
+            <div class="menu-divider"></div>
+            <h3>Configured Servers</h3>
+            <div id="configured-servers"></div>
+        </div>
+    </div>
+ 
+    <div id="map"></div>
+ 
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/storage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/serverStorage.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/serverRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/servers.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/players.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/events.js') }}"></script>
+
+</body>
+</html>

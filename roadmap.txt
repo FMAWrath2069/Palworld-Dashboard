@@ -1,0 +1,576 @@
+
+---
+
+# Palworld Admin Dashboard
+
+## Project Handoff / Current State
+
+**Last Updated:** July 2026
+
+---
+
+# Project Overview
+
+This project is a **web-based Palworld Dedicated Server administration dashboard**.
+
+The goal is to provide a clean, modern administration interface that communicates with a backend REST API and exposes nearly every server management function through the browser.
+
+This is **not** intended to be a public player-facing website.
+
+Every feature is considered an administrator command.
+
+---
+
+# Current Architecture
+
+The frontend has recently been reorganized into feature-specific modules.
+
+```
+js/
+│
+├── main.js                 // App bootstrap only
+│
+├── services/
+│   ├── api.js
+│   ├── map.js
+│   ├── modal.js
+│   ├── server.js
+│   └── storage.js
+│
+├── modules/
+│   ├── events.js
+│   ├── refresh.js
+│   ├── players.js
+│   ├── logs.js
+│   ├── actions.js
+│   ├── configuration.js
+│   └── utils.js
+```
+
+The goal is that **main.js remains a lightweight application bootstrap.**
+
+---
+
+# Module Responsibilities
+
+## main.js
+
+Contains only:
+
+* App state
+* initialization
+* startup
+
+Should never contain feature implementations.
+
+---
+
+## events.js
+
+Responsible only for wiring UI events.
+
+Contains:
+
+* bindEvents()
+* click handlers
+* keyboard handlers
+* modal bindings
+
+No business logic.
+
+---
+
+## refresh.js
+
+Responsible for server refresh.
+
+Contains:
+
+* refresh()
+* renderPayload()
+
+Everything involving refreshing statistics belongs here.
+
+---
+
+## players.js
+
+Responsible for player handling.
+
+Contains:
+
+* normalizePlayers()
+* extractPlayers()
+* getPlayerId()
+* getPlayerNickname()
+* renderPlayers()
+* showPlayers()
+
+Everything involving online players belongs here.
+
+---
+
+## logs.js
+
+Responsible for logs.
+
+Contains:
+
+* showLog()
+* updateLogCounts()
+
+Later this module will likely gain:
+
+* pagination
+* filtering
+* searching
+
+---
+
+## actions.js
+
+Contains all administrator actions.
+
+Examples:
+
+* Kick
+* Ban
+* Unban
+* Announcement
+* Shutdown
+* Save World
+* Emergency Stop
+* Start API
+
+This module should eventually contain every API action.
+
+---
+
+## configuration.js
+
+Responsible only for server configuration.
+
+Contains:
+
+* add server
+* edit server
+* delete server
+* configuration modal
+
+---
+
+## utils.js
+
+Contains shared helpers.
+
+Examples:
+
+* getValue()
+* setText()
+* getPlayerCount()
+* getUniqueGuildCount()
+
+Utility functions only.
+
+---
+
+# Current Strengths
+
+The project now has:
+
+✔ Modular frontend
+
+✔ Separate services
+
+✔ Separate feature modules
+
+✔ Clean App object
+
+✔ Easy future expansion
+
+✔ Good separation of responsibilities
+
+---
+
+# Current Features
+
+Implemented:
+
+Server Administration
+- Kick player
+- Ban player
+- Unban player
+- Save world
+- Emergency stop
+- Scheduled shutdown
+- Server announcements
+
+Dashboard
+- Live statistics
+- Online player list
+- Automatic refresh
+- API unavailable handling
+
+Configuration
+- Multiple server support
+- Server configuration editor
+
+Map
+- Base map rendering (needs adjusted in future as had to jump through hoops to get it working.  It works but if you saw the values you would scratch your head.)
+
+Logging
+- Kick log
+- Ban log
+- Local log persistence
+
+---
+
+# Backend Expectations
+
+The frontend expects REST endpoints for:
+
+```
+GET    /api/status
+
+POST   /api/announce
+
+POST   /api/shutdown
+
+POST   /api/kick
+
+POST   /api/ban
+
+POST   /api/unban
+
+POST   /api/save
+
+POST   /api/emergency-stop
+
+POST   /api/start
+
+GET    /api/servers
+
+POST   /api/servers
+
+PUT    /api/servers/:id
+
+DELETE /api/servers/:id
+```
+
+---
+
+# Coding Style
+
+Project conventions:
+
+* ES6
+* async/await
+* no frameworks
+* no build step
+* browser-native JavaScript
+* one responsibility per module
+* avoid global utility functions unless shared
+* feature logic belongs inside feature modules
+
+---
+
+# Design Philosophy
+
+The project intentionally favors:
+
+* readability
+* maintainability
+* explicit code
+
+over
+
+* clever abstractions
+* excessive DRY
+* compact one-liners
+
+Future contributors should preserve this style.
+
+---
+
+# Backend Status
+
+The backend is currently functional but remains largely contained within a single `app.py` file (1300+ lines).
+
+It provides the REST API consumed by the frontend and contains:
+
+- API endpoints
+- server management
+- RCON communication
+- configuration handling
+- map generation
+- process management
+- various utility functions
+
+The next major milestone is separating these responsibilities into route modules and reusable services to mirror the frontend architecture.
+
+---
+
+# Suggested Next Steps (Priority Order)
+
+0. Refactor Backend Architecture (Critical)
+
+The backend has grown to over 1300 lines and should be modularized before additional feature work.
+
+Targeted Backend Architecture:
+
+backend/
+│
+├── app.py                 # Flask startup only
+│
+├── routes/                # Flask Blueprints organized by feature
+│   ├── status.py
+│   ├── players.py
+│   ├── server.py
+│   ├── configuration.py
+│   ├── logs.py
+│   ├── map.py
+│   └── admin.py
+│
+├── services/
+│   ├── rcon.py
+│   ├── process.py
+│   ├── parser.py
+│   ├── config.py
+│   ├── cache.py
+│   └── updater.py
+│
+├── models/
+│   ├── server.py
+│   └── player.py
+│
+├── utils/
+│   ├── validation.py
+│   ├── helpers.py
+│   └── logging.py
+│
+└── extensions.py
+
+Goals:
+
+Keep app.py under ~200 lines.
+Move each REST endpoint into feature-based route modules.
+Extract business logic into reusable services.
+Separate HTTP handling from server management logic.
+Improve maintainability and reduce merge conflicts.
+Mirror the frontend's modular architecture.
+
+---
+
+## 1. Add Toast Notifications (High Priority)
+
+Replace silent success/failure behavior with a consistent notification system.
+
+Examples:
+
+* "World saved."
+* "Player banned."
+* "Announcement sent."
+* "Shutdown scheduled."
+* "API unavailable."
+* "Server configuration saved."
+
+A lightweight `ToastService` would improve feedback throughout the dashboard.
+
+---
+
+## 2. Implement Loading States (High Priority)
+
+Prevent duplicate submissions and improve responsiveness by showing loading states while API calls are in progress.
+
+Examples:
+
+* Disable buttons during requests.
+* Show spinners or "Saving...", "Sending...", etc.
+* Re-enable controls after completion.
+
+---
+
+## 3. Centralize Error Handling (High Priority)
+
+Many modules currently use:
+
+```javascript
+catch (error) {
+    console.error(error);
+}
+```
+
+Introduce a shared error handler (e.g., `ErrorService`) to:
+
+* Log errors consistently.
+* Display user-friendly messages.
+* Detect API connectivity issues.
+* Trigger the API unavailable modal when appropriate.
+
+---
+
+## 4. Move Admin Commands into Dedicated Modules (Medium Priority)
+
+As the dashboard grows, split `actions.js` further by responsibility:
+
+```
+modules/
+    admin/
+        playerActions.js
+        serverActions.js
+        announcements.js
+        shutdown.js
+```
+
+This keeps each file focused and prevents `actions.js` from becoming another large file.
+
+---
+
+## 5. Improve Log Management (Medium Priority)
+
+Current logs are simple lists stored locally.
+
+Enhancements:
+
+* Search by player name or ID.
+* Filter by action type.
+* Sort newest/oldest.
+* Limit retained entries.
+* Export logs.
+* Optional backend persistence.
+
+---
+
+## 6. Enhance Player Management (Medium Priority)
+
+Expand the player interface with:
+
+* Steam ID display (or console equivalent).
+* Copy Player ID.
+* Ping (if available).
+* Character level.
+* Guild membership.
+* Playtime (would require storing session data).
+* Last login (or last seen).
+* Quick action menu.
+
+---
+
+## 7. Improve Server Configuration (Medium Priority)
+
+Add validation before saving:
+
+* Duplicate server names.
+* Duplicate address/port combinations.
+* Invalid IP or hostname.
+* Port range validation.
+* Required field checks.
+
+Optional:
+
+* Test Connection button.
+* Auto-detect server version.
+
+---
+
+## 8. Improve Map Functionality (Medium Priority)
+
+Enhance the map experience:
+
+* Player markers.
+* Guild-colored bases (user configurable or randomly assigned).
+* Marker clustering (evaluate after testing on high guild count server or close location guilds).
+* Search for bases.
+* Filter by guild.
+* Toggle map layers (possibility.  Not known at this time if you can build on world tree map).
+* Base detail popups.
+
+---
+
+## 9. Create a Reusable Modal Framework (Low Priority)
+
+Many confirmation dialogs share nearly identical behavior.
+
+A reusable confirmation API could reduce duplication:
+
+```javascript
+ModalService.confirm({
+    title: "...",
+    message: "...",
+    confirmText: "...",
+    danger: true,
+    onConfirm: async () => { ... }
+});
+```
+
+---
+
+## 10. Add Settings Support (Low Priority)
+
+Introduce persistent UI preferences:
+
+* Refresh interval (stored in servers configuration).
+* Theme (light/dark not sure if this is worth it as it is just a bar).
+* Map defaults.
+* Log retention.
+* Default server.
+* Notification preferences (ability to send browser notifications [OFF BY DEFAULT AND EXCLUSIVELY OPT-IN]).
+
+---
+
+## 11. Add Dashboard Health Monitoring (Future)
+
+Display server health information such as:
+
+* API latency.
+* Last successful refresh (already sort of implemented).
+* Failed refresh count.
+* Server uptime.
+* Memory usage (if supported by hosting environment).
+* CPU usage (if supported by hosting environment).
+* Disk usage (if supported by hosting environment).
+* Save status (corruption counter if I can figure out a way to detect it).
+
+---
+
+## 12. Add Automated Testing (Future)
+
+Introduce unit tests for utility modules and integration tests for core workflows.
+
+Suggested focus:
+
+* Player normalization.
+* Statistics parsing.
+* Configuration validation.
+* API response handling.
+* Log management.
+
+---
+
+## 13. Documentation Improvements (Future)
+
+Expand project documentation with:
+
+* API endpoint reference.
+* Module dependency diagram.
+* Frontend architecture guide.
+* Contributor guidelines.
+* Coding standards.
+* Release checklist.
+
+---
+
+# Long-Term Vision
+
+The long-term goal is to provide a polished, maintainable administration console that exposes the full capabilities of the Palworld Dedicated Server REST API while remaining easy to extend.
+
+The emphasis should remain on:
+
+* **Predictable, modular backend architecture**
+* **Clear module boundaries**
+* **Explicit, readable JavaScript**
+* **Minimal dependencies**
+* **Native browser APIs**
+* **Incremental feature growth without creating large, monolithic files**
+
+By continuing to split functionality by feature and keeping services focused, the dashboard should remain approachable for new contributors and straightforward to maintain as new administrative capabilities are added.

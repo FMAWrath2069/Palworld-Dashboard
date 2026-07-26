@@ -1,0 +1,19 @@
+{
+  "default": {
+    "id": "default",
+    "name": "Default Server",
+    "address": "127.0.0.1",
+    "port": 8212,
+    "password": "",
+    "poll_interval_seconds": 30,
+    "data_refresh_seconds": 60,
+    "max_pal_base_distance": null,
+    "use_ssh": false,
+    "ssh_host": "",
+    "ssh_port": 22,
+    "ssh_user": "",
+    "ssh_key": "",
+    "remote_host": "127.0.0.1",
+    "remote_port": 8212
+  }
+}
