@@ -103,6 +103,7 @@ templates/
 
 data/
 map/
+*Extract zipped folders/files from within map folder into the map directory.  Do not rename anything or else it may break*
 ```
 
 ---
