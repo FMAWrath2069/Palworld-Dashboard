@@ -32,11 +32,11 @@ https://github.com/FMAWrath2069/Palworld-Dashboard
 
 ---
 
-# Requirements
+## Requirements
 
-* Python 3.11 or newer
-* Git
-* OpenSSH Client (required for remote server management)
+* Python 3.11 or newer — https://www.python.org/downloads/
+* Git — https://git-scm.com/downloads
+* OpenSSH (**OPTIONAL**, required for encrypted remote server management via SSH tunnels)
 * A Palworld Dedicated Server with the REST API and GAME-DATA API enabled
 
 ---
