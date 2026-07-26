@@ -1,55 +1,71 @@
-# Coding Standards
+# Contributor Guidelines
 
-The goal of this project is to maintain a clean, readable, and modular codebase.
+Thank you for your interest in contributing to Palworld Dashboard.
 
-## General
+Contributions of all sizes are welcome, including bug fixes, documentation improvements, performance enhancements, and new features.
 
-* Favor readability over cleverness.
-* Keep functions focused on a single responsibility.
-* Avoid duplicated logic.
-* Prefer descriptive names over abbreviations.
-* Keep modules small and organized.
+## Before You Begin
 
-## Python
+* Search existing Issues before creating a new one.
+* If you're planning a large feature, open an Issue first to discuss the design.
+* Keep pull requests focused on a single feature or bug fix whenever possible.
 
-* Follow PEP 8 where practical.
-* Use 4 spaces for indentation.
-* Use `snake_case` for variables and functions.
-* Use `PascalCase` for classes.
-* Group imports as:
+## Reporting Bugs
 
-  1. Standard library
-  2. Third-party packages
-  3. Local project imports
-* Prefer early returns over deeply nested conditionals.
-* Catch only exceptions you expect.
-* Do not expose internal exception messages to API clients.
-* Use the project's logging facilities instead of `print()` for new code.
+When reporting a bug, please include:
 
-## JavaScript
+* Dashboard version or commit hash
+* Operating system
+* Python version
+* Steps to reproduce the issue
+* Expected behavior
+* Actual behavior
+* Screenshots or logs (if applicable)
 
-* Use modern ES6+ syntax.
-* Use `const` whenever a variable is not reassigned.
-* Use `let` instead of `var`.
-* Use `camelCase` for variables and functions.
-* Use `PascalCase` for global modules attached to `window`.
-* Always use braces for conditional statements.
-* Prefer `async/await` over chained promises.
-* Avoid deeply nested callbacks.
+## Feature Requests
 
-## HTML
+Feature requests should include:
 
-* Use semantic HTML whenever possible.
-* Keep indentation consistent.
-* Avoid inline JavaScript.
-* Prefer reusable components over duplicated markup.
+* The problem you're trying to solve
+* Your proposed solution
+* Any alternatives you've considered
 
-## CSS
+## Pull Requests
 
-* Keep selectors specific but not overly complex.
-* Reuse existing classes before creating new ones.
-* Group related styles together.
+Before submitting a pull request:
 
+* Verify the project runs without errors.
+* Ensure new code follows the project's coding standards.
+* Remove debugging statements before submitting.
+* Update documentation when appropriate.
+* Keep commits clean and descriptive.
+
+## Commit Messages
+
+Use concise commit messages such as:
+
+* Add SSH tunnel auto-reconnect
+* Fix player refresh race condition
+* Refactor polling service
+* Improve server status handling
+
+## Branch Naming
+
+Examples:
+
+* feature/server-status
+* feature/log-viewer
+* bugfix/polling-thread
+* refactor/api-service
+* docs/readme-update
+
+## Code Reviews
+
+Please be receptive to feedback. Code reviews are intended to improve code quality and maintain consistency throughout the project.
+
+## Questions
+
+If you're unsure about a change, open a GitHub Discussion or Issue before beginning implementation.
 ## Flask
 
 * Keep route handlers thin.
