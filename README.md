@@ -471,8 +471,8 @@ data/
     |   |                     tracking is enabled.
     │   ├── stats.json      # Cached server statistics and server metrics gathered from the
     |   |                     Palworld API.
-    │   └── metadata.json   # Server metadata, internal tracking information, timestamps, update
-    |                         information, and other persistent server state data.
+    │   └── metadata.json   # Server metadata, internal tracking information, timestamps,
+    |                         update information, and other persistent server state data.
     │
     └── server-12345/
         ├── bases.json      # Cached Palworld base/camp information.
