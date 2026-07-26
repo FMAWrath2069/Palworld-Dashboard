@@ -1,0 +1,139 @@
+# ==============================
+# Python
+# ==============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.so
+.Python
+
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==============================
+# Virtual Environments
+# ==============================
+
+.venv/
+venv/
+env/
+ENV/
+
+# ==============================
+# Environment / Secrets
+# ==============================
+
+.env
+.env.*
+*.secret
+
+# Local configuration files
+config.yaml
+
+# Allow example configuration
+!config.yaml.example
+
+# ==============================
+# Application Data
+# ==============================
+
+# Generated server data
+data/servers/*
+
+# Keep folder structure
+!data/servers/.gitkeep
+
+# Runtime generated data
+data/*.json
+
+# Logs
+*.log
+logs/
+
+# ==============================
+# Palworld Server Files
+# ==============================
+
+Pal/
+Saved/
+Backups/
+
+*.sav
+*.pak
+*.ucas
+*.utoc
+
+# ==============================
+# Map Cache
+# ==============================
+
+# Ignore all map subdirectories
+map/*/
+
+# Keep files directly inside map/
+!map/*
+
+# ==============================
+# Testing
+# ==============================
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==============================
+# Code Quality Tools
+# ==============================
+
+.bandit
+.flake8
+
+# ==============================
+# IDEs / Editors
+# ==============================
+
+.vscode/
+.idea/
+
+*.swp
+*.swo
+
+# ==============================
+# Operating System
+# ==============================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+.directory
+
+# ==============================
+# Temporary Files
+# ==============================
+
+*.tmp
+*.temp
+*.bak
+*.old
