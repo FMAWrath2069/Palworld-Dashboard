@@ -463,8 +463,8 @@ Example:
 data/
 └── servers/
     ├── default/
-    │   ├── bases.json      # Cached Palworld base/camp information: number of, locations,
-    |   |                     player ownership, coordinates, and other base-related tracking data.
+    │   ├── bases.json      # Cached Palworld base/camp information: locations, player
+    |   |                     ownership, coordinates, and other base-related tracking data.
     │   ├── players.json    # Cached player information: known players, player IDs, names,
     |   |                     and player activity data. (Not working ATM)
     │   ├── pals.json       # Cached Pal tracking information and related data when base Pal
