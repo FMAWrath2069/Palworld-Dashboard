@@ -48,7 +48,7 @@ git clone https://github.com/FMAWrath2069/Palworld-Dashboard.git
 
 cd Palworld-Dashboard
 ```
-Unzip the mapfiles.zip folder and put all folders in /maps
+Unzip the mapfiles.zip folder and put all folders in /map
 ---
 
 # Create a Virtual Environment
